@@ -10,7 +10,8 @@ def monkey(word : str):
     target = letters[rdm]
     plain += target
     prints += 1
+    if prints % 10000 == 0: print(format(prints, ',d'), "letters")
 
-  print(plain, prints)
+  print(plain, format(prints, ',d'))
 
-monkey("oooo")
+monkey("lea")
