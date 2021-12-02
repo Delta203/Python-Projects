@@ -12,6 +12,7 @@ def monkey(word : str):
     prints += 1
     if prints % 10000 == 0: print(format(prints, ',d'))
 
+  print("")
   print(plain, format(prints, ',d'))
 
 monkey("lea")
