@@ -25,8 +25,8 @@ def monkey(word : str, letters: str = "abcdefghijklmnopqrstuvwxyz"):
     prints += 1
     if prints % 10000 == 0: print(format(prints, ',d'), plain[-50:])
 
-  """if len(plain) > 10000: print("-> Last 10000 letters: ..." + plain[-10000:], format(prints, ',d'))
-  else: print("-> " + plain, format(prints, ',d'))"""
+  #if len(plain) > 10000: print("-> Last 10000 letters: ..." + plain[-10000:], format(prints, ',d'))
+  #else: print("-> " + plain, format(prints, ',d'))
   print(format(prints, ',d'), plain[-50:] + " <-")
 
 def checkword(word : str, letters : str) -> bool:
