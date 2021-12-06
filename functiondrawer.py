@@ -42,23 +42,7 @@ class CoordinateSystem:
     for i in range(-self.size*2, self.size*2+1):
       i = i/2
       
-      _val = val[0]
-      for j in range(len(val)-1):
-        if val[j].isdigit() and val[j+1] == "x":
-          _val += "*"
-          _val += val[j+1]
-        elif val[j] == "x" and val[j+1].isdigit():
-          _val += "*"
-          _val += val[j+1]
-        elif (val[j].isdigit() or val[j] == "x") and val[j+1] == "(":
-          _val += "*"
-          _val += val[j+1]
-        elif val[j] == ")" and (val[j+1].isdigit() or val[j+1] == "x"):
-          _val += "*"
-          _val += val[j+1]
-        else: _val += val[j+1]
       try:
-        val = _val.replace("^", "**")
         equation = eval(val.replace("x", "("+str(i)+")"))
         equation = float("{:.1f}".format(equation))
         if equation <= self.size: 
@@ -66,13 +50,37 @@ class CoordinateSystem:
           else: self.writeByXandY(i, equation, "x")
       except: pass
 
-""" evaluation: python functiondrawer.py <func> """
+def rawFunction(val: str) -> str:
+  _val = val[0]
+  for j in range(len(val)-1):
+    if val[j].isdigit() and val[j+1] == "x":
+      _val += "*"
+      _val += val[j+1]
+    elif val[j] == "x" and val[j+1].isdigit():
+      _val += "*"
+      _val += val[j+1]
+    elif (val[j].isdigit() or val[j] == "x") and val[j+1] == "(":
+      _val += "*"
+      _val += val[j+1]
+    elif val[j] == ")" and (val[j+1].isdigit() or val[j+1] == "x"):
+      _val += "*"
+      _val += val[j+1]
+    else: _val += val[j+1]
+  val = _val.replace("^", "**")
+  return val
+
+""" evaluation: python functiondrawer.py <func> <size> """
 func = "x"
+size = 10
 if len(sys.argv) == 2:
     func = str(sys.argv[1])
+elif len(sys.argv) == 3:
+    func = str(sys.argv[1])
+    size = int(sys.argv[2])
     
-cs = CoordinateSystem()
+func = rawFunction(func)
+cs = CoordinateSystem(size)
 cs.function(func)
 cs.printCoordinateSystem()
 
-print("-> " + func)
+print("-> Function: " + func)
