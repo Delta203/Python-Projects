@@ -30,7 +30,7 @@ def getNextPrime(num: int) -> int:
         else: return num
         num += 1
 
-def has(st: str, longhash: bool = False) -> str:
+def has(st: str, prefix: str = "0x", longhash: bool = False) -> str:
     """
     one way function: 
         g^exp mod p
@@ -50,7 +50,7 @@ def has(st: str, longhash: bool = False) -> str:
     result = ""
     for i in range(0, 64):
         result += h[split*i]
-    return result
+    return prefix + result
     
 # usage: python hashfunction.py <words>
 w = ""
@@ -60,6 +60,6 @@ w = w[1:]
 
 start_time = time.time()
 print("input       :", w)
-print("hash        :", "0x" + has(w))
+print("hash        :", has(w))
 end_time = time.time()
 print("process time:", str(round(end_time-start_time, 4)) + "sec")
