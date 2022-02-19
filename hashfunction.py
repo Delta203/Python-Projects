@@ -30,7 +30,7 @@ def getNextPrime(num: int) -> int:
         else: return num
         num += 1
 
-def has(st: str, prefix: str = "0x", longhash: bool = False) -> str:
+def has(st: str, longhash: bool = False, prefix: str = "0x") -> str:
     """
     one way function: 
         g^exp mod p
