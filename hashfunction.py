@@ -34,6 +34,7 @@ def has(st: str, prefix: str = "0x", longhash: bool = False) -> str:
     """
     one way function: 
         g^exp mod p
+        g^exp > p
     g: str
     exp: int
     p: int | high prime number
