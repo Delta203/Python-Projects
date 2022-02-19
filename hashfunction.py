@@ -42,7 +42,7 @@ def has(st: str, prefix: str = "0x", longhash: bool = False) -> str:
     """
     exp = 64
     g = stringToBinary(st)
-    p = (g**exp) * getNextPrime(len(str(g)))
+    p = getNextPrime(len(str(g)))
     h = bAdic(g**exp % p, 16)
     split = len(h) // 64
     
