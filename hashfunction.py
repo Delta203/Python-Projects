@@ -3,7 +3,7 @@ import sys, time
 def stringToBinary(st: str) -> int:
     return int("".join(format(ord(i), "08b") for i in st))
 
-def bAdic(num: int, base: int = 2, seperator: str = "") -> str:
+def bAdic(num: int, base: int = 2) -> str:
     """
     b-Adic possible to base 35
     base:
@@ -30,28 +30,25 @@ def getNextPrime(num: int) -> int:
         else: return num
         num += 1
 
-def has(st: str, longhash: bool = False, prefix: str = "0x") -> str:
-    """
-    one way function: 
-        g^exp mod p
-        g^exp > p
-    g: str
-    exp: int
-    p: int | high prime number
+def has(st: str, withblock: bool = False, withbithash: bool = False, blocklen: int = 4, length: int = 64) -> str:
+    exp = 8
+    b_st = stringToBinary(st)
+    b_st_len = len(str(b_st))
+    trim = [int("1" + str(b_st)[x*b_st_len//blocklen:(x+1)*b_st_len//blocklen])**exp for x in range(blocklen)] # split bitvalue into blocks
+    if withblock: print("block       :", trim)
+    #print(trim)
     
-    longhash: bool | mainly for debug
-    """
-    exp = 64
-    g = stringToBinary(st)
-    p = getNextPrime(len(str(g)))
-    h = bAdic(g**exp % p, 16)
-    split = len(h) // 64
-    
-    if longhash: return h
-    result = ""
-    for i in range(0, 64):
-        result += h[split*i]
-    return prefix + result
+    bit_hash = ""
+    c = 1
+    for val in trim:
+        dexp = (len(str(val))//5)
+        if dexp > 4: dexp = 4
+        p = getNextPrime(int(str(val)[:5]) * c)**dexp
+        bit_hash += str(int(val) % p)
+        c += 1
+    if withbithash: print("bithash     :", bit_hash)
+    hex_hash = bAdic(int(bit_hash), 16)[:length]
+    return "0x" + "0"*(63-len(hex_hash)) + hex_hash
     
 # usage: python hashfunction.py <words>
 w = ""
@@ -61,6 +58,6 @@ w = w[1:]
 
 start_time = time.time()
 print("input       :", w)
-print("hash        :", has(w))
+print("hash        :", has(w, False, True))
 end_time = time.time()
 print("process time:", str(round(end_time-start_time, 4)) + "sec")
