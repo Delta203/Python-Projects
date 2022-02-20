@@ -53,7 +53,7 @@ def has(st: str, withblock: bool = False, withbithash: bool = False, blocklen: i
 # usage: python hashfunction.py <words>
 w = ""
 for i in range(1, len(sys.argv)):
-    w += sys.argv[i]
+    w = w + " " + sys.argv[i]
 w = w[1:]
 
 start_time = time.time()
