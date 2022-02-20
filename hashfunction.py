@@ -6,10 +6,11 @@ def stringToBinary(st: str) -> int:
 def bAdic(num: int, base: int = 2) -> str:
     """
     b-Adic possible to base 35
-    base:
-        2: binary
-        10: decimal
-        16: hex
+    
+    base : int
+        2 : binary
+        10 : decimal
+        16 : hex
     """
     def getVal(num_: int) -> str:
         l = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -30,25 +31,36 @@ def getNextPrime(num: int) -> int:
         else: return num
         num += 1
 
-def has(st: str, withblock: bool = False, withbithash: bool = False, blocklen: int = 4, length: int = 64) -> str:
-    exp = 8
+def has(st: str, printBlocks: bool = False, printBitHash: bool = False, printFullHash: bool = False) -> str:
+    """
+    generate hash value
+    output: hex 32 byte
+    
+    printBlocks : list | debug binary value of string
+    printBitHash : bool | debug bithash
+    printFullHash : bool | debug full hash value
+    """
+    exp = 32
+    blockAmount = 6
     b_st = stringToBinary(st)
     b_st_len = len(str(b_st))
-    trim = [int("1" + str(b_st)[x*b_st_len//blocklen:(x+1)*b_st_len//blocklen])**exp for x in range(blocklen)] # split bitvalue into blocks
-    if withblock: print("block       :", trim)
-    #print(trim)
+    padding = b_st % len(str(b_st))
+    
+    trim = [(int("1" + str(b_st)[x*b_st_len//blockAmount:(x+1)*b_st_len//blockAmount])+padding)**exp for x in range(blockAmount)] # split bitvalue into blocks
+    if printBlocks: print("block       :", trim)
     
     bit_hash = ""
     c = 1
     for val in trim:
-        dexp = len(str(val))//5
-        if dexp > 4: dexp = 4
+        dexp = blockAmount // 2 # force hash length
         p = getNextPrime(int(str(val)[:5]) * c)**dexp
-        bit_hash += str(int(val) % p)
+        bit_hash += str((int(val) % p) + padding)
         c += 1
-    if withbithash: print("bithash     :", bit_hash)
-    hex_hash = bAdic(int(bit_hash), 16)[:length]
-    return "0x" + "0"*((length-1)-len(hex_hash)) + hex_hash
+    if printBitHash: print("bithash     :", bit_hash)
+    hex_hash = bAdic(int(bit_hash), 16)
+    if printFullHash: print("fullhash    :", "0x" + hex_hash)
+    comp_hex_hash = hex_hash[-63:]
+    return "0x" + "0"*(63-len(comp_hex_hash)) + comp_hex_hash
     
 # usage: python hashfunction.py <words>
 w = ""
@@ -58,6 +70,6 @@ w = w[1:]
 
 start_time = time.time()
 print("input       :", w)
-print("hash        :", has(w, False, True))
+print("hash        :", has(w, False, False, False))
 end_time = time.time()
 print("process time:", str(round(end_time-start_time, 4)) + "sec")
