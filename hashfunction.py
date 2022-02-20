@@ -48,7 +48,7 @@ def has(st: str, withblock: bool = False, withbithash: bool = False, blocklen: i
         c += 1
     if withbithash: print("bithash     :", bit_hash)
     hex_hash = bAdic(int(bit_hash), 16)[:length]
-    return "0x" + "0"*(63-len(hex_hash)) + hex_hash
+    return "0x" + "0"*((length-1)-len(hex_hash)) + hex_hash
     
 # usage: python hashfunction.py <words>
 w = ""
