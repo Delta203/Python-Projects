@@ -41,7 +41,7 @@ def has(st: str, withblock: bool = False, withbithash: bool = False, blocklen: i
     bit_hash = ""
     c = 1
     for val in trim:
-        dexp = (len(str(val))//5)
+        dexp = len(str(val))//5
         if dexp > 4: dexp = 4
         p = getNextPrime(int(str(val)[:5]) * c)**dexp
         bit_hash += str(int(val) % p)
