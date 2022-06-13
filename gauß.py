@@ -13,7 +13,12 @@ class Matrix:
         print(" ")
         for a in self.matrix:
             print('\t'.join(str(i) for i in a))
-
+"""
+[-64,16,-4,1,-3],
+[-8,4,-2,1,-11],
+[1,1,1,1,-0.5],
+[64,16,4,1,-17],
+"""
 A = Matrix([
     [2,2,3,75],
     [1,2,2,50],
@@ -49,3 +54,4 @@ for i in range(A.getRows()-1, -1, -1):
     A.matrix[i][A.getColumns()-1] = c
 
 A.print()
+# https://www.share-code.eu/?c=srbximv
