@@ -1,4 +1,5 @@
 import os
+import sys
 import random
 clear = lambda: os.system("cls")
 
@@ -34,13 +35,34 @@ class Game2048:
             if self.board[i] == 0: emptys.append(i)
         if len(emptys) == 0: return
         index = random.choice(emptys)
-        self.board[index] = random.choice([1,1,1,1,1,1,1,1,1,2])
+        self.board[index] = random.choice([2,2,2,2,2,2,2,2,2,4])
     
-    def printBoard(self):
-        """Prints the current game board."""
+    def printBoard(self, colored=False):
+        """Prints the current game board.
+        
+        Parameters
+        ----------
+        colored : bool, optional
+            The numbers are displayed in color
+        """
         for i in range(0, len(self.board), 4):
             row = self.board[i:i+4]
-            print("\t|\t".join(str(n).replace("0", " ") for n in row))
+            if not colored: print("\t|\t".join(str(n).replace("0", " ") for n in row))
+            else: print("\t|\t".join(
+                ("{" + str(n) + "}")
+                    .replace("{0}", " ")
+                    .replace("{2}", "\x1b[48;2;126;150;159m" + " 2 " + "\x1b[0m")
+                    .replace("{4}", "\x1b[48;2;99;123;132m" + " 4 " + "\x1b[0m")
+                    .replace("{8}", "\x1b[48;2;242;177;121m" + " 8 " + "\x1b[0m")
+                    .replace("{16}", "\x1b[48;2;245;149;99m" + " 16 " + "\x1b[0m")
+                    .replace("{32}", "\x1b[48;2;246;124;96m" + " 32 " + "\x1b[0m")
+                    .replace("{64}", "\x1b[48;2;246;94;59m" + " 64 " + "\x1b[0m")
+                    .replace("{128}", "\x1b[48;2;237;207;115m" + " 128 " + "\x1b[0m")
+                    .replace("{256}", "\x1b[48;2;237;204;98m" + " 256 " + "\x1b[0m")
+                    .replace("{512}", "\x1b[48;2;237;200;80m" + " 512 " + "\x1b[0m")
+                    .replace("{1024}", "\x1b[48;2;237;197;63m" + " 1024 " + "\x1b[0m")
+                    .replace("{2048}", "\x1b[48;2;237;194;45m" + " 2048 " + "\x1b[0m")
+                for n in row))
             if i != 12: print("-" * 55)
             
     def merge(self, direction: str) -> bool:
@@ -149,12 +171,13 @@ class Game2048:
             self.__insertRandom()
 
 if __name__ == "__main__":
+    colored = False
+    if len(sys.argv) == 2: colored = sys.argv[1] == "colored"
     clear()
     game = Game2048()
     while True:
-        game.printBoard()
+        game.printBoard(colored)
         direction = input()
         if direction == "quit": break
         clear()
         game.move(direction)
-        
