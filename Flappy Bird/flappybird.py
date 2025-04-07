@@ -209,8 +209,11 @@ while running:
                     bird.alive = False
                     bird.learning_score -= 1
 
-            if not bird.alive and bird not in dead_birds:
-                dead_birds.append(bird)
+            if bird.alive:
+                bird.learning_score += 0.1
+            else:
+                if bird not in dead_birds:
+                    dead_birds.append(bird)
 
         if pipe_passed: pipes[0].passed = True
 
