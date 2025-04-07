@@ -236,24 +236,37 @@ while running:
         pygame.display.update()
         clock.tick(60 * GAME_SPEED)
 
-    scores = [bird.learning_score for bird in birds]
+    scores = [bird.score for bird in birds]
     max_score = max(scores)
-    avg_score = sum(scores) / len(scores)
-    generation_stats.append({
-        "generation": len(generation_stats) + 1,
-        "max_score": max_score,
-        "avg_score": avg_score
-    })
+    if running or not generation_stats or max_score > generation_stats[-1]["max_score"]:
+        avg_score = sum(scores) / len(scores)
+        learning_scores = [bird.learning_score for bird in birds]
+        max_learning_score = max(learning_scores)
+        avg_learning_score = sum(learning_scores) / len(learning_scores)
+        generation_stats.append({
+            "generation": len(generation_stats) + 1,
+            "max_score": max_score,
+            "avg_score": avg_score,
+            "max_learning_score": max_learning_score,
+            "avg_learning_score": avg_learning_score
+        })
 
 pygame.quit()
 
 generations = [stats["generation"] for stats in generation_stats]
 max_scores = [stats["max_score"] for stats in generation_stats]
+max_score_trend = np.poly1d(np.polyfit(generations, max_scores, deg=1))(generations)
 avg_scores = [stats["avg_score"] for stats in generation_stats]
+max_learning_scores = [stats["max_learning_score"] for stats in generation_stats]
+avg_learning_scores = [stats["avg_learning_score"] for stats in generation_stats]
 
 plt.figure(figsize=(10, 6))
-plt.plot(generations, max_scores, label="Max Learning Score", marker='o')
-plt.plot(generations, avg_scores, label="Average Learning Score", linestyle='--')
+plt.plot(generations, max_scores, label="Max Score", marker="o", color="cornflowerblue")
+plt.plot(generations, avg_scores, label="Average Score", linestyle="--", color="cornflowerblue")
+plt.plot(generations, max_score_trend, label="Average Score Trend", linestyle="--", color="blue")
+plt.plot(generations, max_learning_scores, label="Max Learning Score", marker="o", color="orange")
+plt.plot(generations, avg_learning_scores, label="Average Learning Score", linestyle="--", color="orange")
+
 plt.xlabel("Generation")
 plt.ylabel("Learning Score")
 plt.title("Generation Stats")
