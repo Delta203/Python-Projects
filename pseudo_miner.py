@@ -1,0 +1,53 @@
+import hashlib
+import datetime
+import json
+import multiprocessing
+
+DIFFICULTY = "000000"
+
+def mine(block: str, queue, p_id, p_max, debug: bool=False):
+  block["nonce"] = p_id - 1
+  block_nonce = block["nonce"]
+  
+  block_prefix = f'{{"id": {block["id"]}, "nonce": '.encode("utf-8")
+  block_suffix = f', "time": "{block["time"]}", "transactions": {json.dumps(block["transactions"])}}}'.encode("utf-8")
+  
+  while True:
+    byte_block = block_prefix + f"{block_nonce}".encode("ascii") + block_suffix
+    hash_block = hashlib.sha256(byte_block).hexdigest()
+    
+    if debug and block_nonce % 1000000 == 0:
+      print(block_nonce, hash_block)
+    
+    if hash_block[0:len(DIFFICULTY)] == DIFFICULTY:
+      queue.put((p_id, hash_block, byte_block.decode("utf-8")))
+      return
+    
+    block_nonce += p_max
+
+if __name__ == "__main__":
+  BLOCK = {
+    "id": 0,
+    "nonce": 0,
+    "time": datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
+    "transactions": [1, 2, 3]
+  }
+  PROCESSES_COUNT = multiprocessing.cpu_count()
+  
+  queue = multiprocessing.Queue()
+  processes = []
+  
+  for i in range(PROCESSES_COUNT):
+    p = multiprocessing.Process(target=mine, args=(BLOCK, queue, i+1, PROCESSES_COUNT))
+    processes.append(p)
+    p.start()
+  
+  p_id, hash_block, str_block = queue.get()
+  
+  for p in processes:
+    p.terminate()
+    p.join()
+  
+  print(f"Process: {p_id}/{PROCESSES_COUNT}")
+  print(f"Block: {str_block}")
+  print(f"Hash: {hash_block}")
